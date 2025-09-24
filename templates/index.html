@@ -3,23 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <title>ChatGPT Chatbot</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <div class="chat-container">
-        <h2>Chat with GPT</h2>
-        <div id="chat-box"></div>
-        <div class="input-group">
-            <input type="text" id="user-input" placeholder="Type your message..." aria-label="User message" />
-            <button id="send-btn" onclick="sendMessage()" aria-label="Send message">Send</button>
-        </div>
+    <div class="container fade-in">
+        <h1>Chat with GPT</h1>
+        <div id="chat-box" style="margin-bottom: 18px; min-height:180px; max-height:350px; overflow-y:auto;"></div>
+        <form class="input-group" onsubmit="sendMessage(); return false;">
+            <input type="text" id="user-input" placeholder="Type your message..." aria-label="User message" autocomplete="off" />
+            <button id="send-btn" type="submit" aria-label="Send message">Send</button>
+        </form>
     </div>
-
     <script>
         async function sendMessage() {
             const inputField = document.getElementById("user-input");
             const sendBtn = document.getElementById("send-btn");
-            const message = inputField.value;
+            const message = inputField.value.trim();
             if (!message) return;
 
             appendMessage("You", message);
