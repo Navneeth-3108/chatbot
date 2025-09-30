@@ -60,5 +60,30 @@ def chat():
         # For production, avoid exposing internal errors
         return jsonify({"error": "Server error"}), 500
 
+# Sample list of Expirex-related questions for suggestions
+SUGGESTIONS = [
+    "How does the Expiry Date Tracker app work?",
+    "How do I add a new product to my account?",
+    "How are expiry dates detected automatically?",
+    "What notifications will I receive before expiry?",
+    "How does the retailer portal update stock?",
+    "How does barcode and OCR technology work in Expirex?",
+    "How do I sign up as a customer?",
+    "How do I sign up as a retailer?",
+    "What should I do if my product's expiry date is missing?",
+    "How does Expirex help reduce wastage?",
+]
+
+@app.route("/suggest", methods=["GET"])
+def suggest():
+    query = request.args.get("q", "").strip().lower()
+    if not query:
+        # Return top 5 suggestions if no query is provided
+        return jsonify({"suggestions": SUGGESTIONS[:5]})
+    # Filter suggestions containing the query (case-insensitive)
+    filtered = [s for s in SUGGESTIONS if query in s.lower()]
+    # Return up to 5 suggestions
+    return jsonify({"suggestions": filtered[:5]})
+
 if __name__ == "__main__":
     app.run(debug=True)

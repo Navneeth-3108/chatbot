@@ -2,58 +2,101 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>ChatGPT Chatbot</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>Expirex Chatbot</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f8f8f8; }
+        #chat-container { max-width: 600px; margin: 40px auto; background: #fff; border-radius: 8px; box-shadow: 0 2px 8px #ccc; padding: 24px; }
+        #messages { min-height: 200px; margin-bottom: 16px; }
+        .message { margin: 12px 0; }
+        .bot { color: #2d7a2d; }
+        .user { color: #1a1a1a; text-align: right; }
+        #input-area { display: flex; gap: 8px; }
+        #user-input { flex: 1; padding: 8px; border-radius: 4px; border: 1px solid #ccc; }
+        #send-btn { padding: 8px 16px; border-radius: 4px; border: none; background: #2d7a2d; color: #fff; cursor: pointer; }
+        #suggestions { margin-top: 4px; }
+        .suggestion { background: #f0f0f0; padding: 8px; margin: 2px 0; border-radius: 4px; cursor: pointer; }
+        .suggestion:hover { background: #d2f5d2; }
+    </style>
 </head>
 <body>
-    <div class="container fade-in">
-        <h1>Chat with Expirex</h1>
-        <div id="chat-box" style="margin-bottom: 18px; min-height:180px; max-height:350px; overflow-y:auto;"></div>
-        <form class="input-group" onsubmit="sendMessage(); return false;">
-            <input type="text" id="user-input" placeholder="Type your message..." aria-label="User message" autocomplete="off" />
-            <button id="send-btn" type="submit" aria-label="Send message">Send</button>
-        </form>
+    <div id="chat-container">
+        <div id="messages">
+            <!-- Initial bot message -->
+            <div class="message bot">
+                This is a chatbot created to clarify your doubts in the project Expirex.
+            </div>
+        </div>
+        <div id="input-area">
+            <input type="text" id="user-input" placeholder="Type your question..." autocomplete="off" />
+            <button id="send-btn">Send</button>
+        </div>
+        <div id="suggestions"></div>
     </div>
     <script>
-        async function sendMessage() {
-            const inputField = document.getElementById("user-input");
-            const sendBtn = document.getElementById("send-btn");
-            const message = inputField.value.trim();
-            if (!message) return;
-    
-            appendMessage("You", message);
-            inputField.value = "";
-            sendBtn.disabled = true;
-    
-            try {
-                const res = await fetch("/chat", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ message })
-                });
-    
-                const data = await res.json();
-                if (data.response) {
-                    appendMessage("Bot", data.response);
-                } else {
-                    appendMessage("Error", data.error);
-                }
-            } catch (err) {
-                appendMessage("Error", "Network error");
-            } finally {
-                sendBtn.disabled = false;
+        const userInput = document.getElementById('user-input');
+        const sendBtn = document.getElementById('send-btn');
+        const messages = document.getElementById('messages');
+        const suggestionsDiv = document.getElementById('suggestions');
+
+        // Fetch and show suggestions as user types
+        userInput.addEventListener('input', function() {
+            const query = userInput.value.trim();
+            if (query.length === 0) {
+                suggestionsDiv.innerHTML = '';
+                return;
             }
+            fetch(`/suggest?q=${encodeURIComponent(query)}`)
+                .then(res => res.json())
+                .then(data => {
+                    suggestionsDiv.innerHTML = '';
+                    (data.suggestions || []).forEach(s => {
+                        const div = document.createElement('div');
+                        div.className = 'suggestion';
+                        div.textContent = s;
+                        div.onclick = () => {
+                            userInput.value = s;
+                            suggestionsDiv.innerHTML = '';
+                            userInput.focus();
+                        };
+                        suggestionsDiv.appendChild(div);
+                    });
+                });
+        });
+
+        // Send message to backend and display response
+        function sendMessage() {
+            const text = userInput.value.trim();
+            if (!text) return;
+            // Show user message
+            const userMsg = document.createElement('div');
+            userMsg.className = 'message user';
+            userMsg.textContent = text;
+            messages.appendChild(userMsg);
+            userInput.value = '';
+            suggestionsDiv.innerHTML = '';
+            // Scroll to bottom
+            messages.scrollTop = messages.scrollHeight;
+
+            // Send to backend
+            fetch('/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: text })
+            })
+            .then(res => res.json())
+            .then(data => {
+                const botMsg = document.createElement('div');
+                botMsg.className = 'message bot';
+                botMsg.textContent = data.response || data.error || "No response";
+                messages.appendChild(botMsg);
+                messages.scrollTop = messages.scrollHeight;
+            });
         }
-    
-        function appendMessage(sender, text) {
-            const chatBox = document.getElementById("chat-box");
-            const messageDiv = document.createElement("div");
-            messageDiv.classList.add("message");
-            messageDiv.innerHTML = `<strong>${sender}:</strong> ${text}`;
-            chatBox.appendChild(messageDiv);
-            chatBox.scrollTop = chatBox.scrollHeight;
-        }
+
+        sendBtn.onclick = sendMessage;
+        userInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') sendMessage();
+        });
     </script>
 </body>
 </html>
