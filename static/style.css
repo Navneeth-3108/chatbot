@@ -133,6 +133,7 @@ h1 {
 }
 
 #suggestions {
+    display: none;
     margin-top: 10px;
     display: flex;
     flex-direction: column;
