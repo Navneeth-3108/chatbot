@@ -9,9 +9,7 @@
     <div class="container">
         <h1>Expirex Chatbot</h1>
         <div id="chat-box" aria-live="polite">
-            <div class="message bot">
-                This is a chatbot created to clarify your doubts in the project Expirex.
-            </div>
+            <!-- No empty .message div here -->
         </div>
         <div class="input-group">
             <input type="text" id="user-input" placeholder="Type your question..." autocomplete="off" aria-label="Type your question" />
@@ -104,6 +102,14 @@
         sendBtn.onclick = sendMessage;
         userInput.addEventListener('keydown', function(e) {
             if (e.key === 'Enter') sendMessage();
+        });
+
+        // Add initial bot message on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            const botMsg = document.createElement('div');
+            botMsg.className = 'message bot';
+            botMsg.textContent = "This is a chatbot created to clarify your doubts in the project Expirex.";
+            messages.appendChild(botMsg);
         });
     </script>
 </body>
