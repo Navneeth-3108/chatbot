@@ -40,10 +40,13 @@
                         const div = document.createElement('div');
                         div.className = 'suggestion';
                         div.textContent = s;
-                        div.onclick = () => {
-                            userInput.value = s;
-                            suggestionsDiv.innerHTML = '';
-                            sendMessage(); // Auto-submit on click
+                        div.tabIndex = 0;
+                        div.onkeydown = (e) => {
+                            if (e.key === "Enter" || e.key === " ") {
+                                userInput.value = s;
+                                suggestionsDiv.innerHTML = '';
+                                sendMessage();
+                            }
                         };
                         suggestionsDiv.appendChild(div);
                     });
@@ -74,7 +77,11 @@
             .then(data => {
                 const botMsg = document.createElement('div');
                 botMsg.className = 'message bot';
-                botMsg.textContent = data.response || data.error || "No response";
+                // Use innerHTML and escape HTML to preserve formatting
+                botMsg.innerHTML = (data.response || data.error || "No response")
+                    .replace(/</g, "&lt;")
+                    .replace(/>/g, "&gt;")
+                    .replace(/\n/g, "<br>");
                 messages.appendChild(botMsg);
                 messages.scrollTop = messages.scrollHeight;
             });
