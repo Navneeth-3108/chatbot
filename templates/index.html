@@ -8,15 +8,14 @@
 <body>
     <div class="container">
         <h1>Expirex Chatbot</h1>
-        <div id="chat-box">
-            <!-- Initial bot message -->
+        <div id="chat-box" aria-live="polite">
             <div class="message bot">
                 This is a chatbot created to clarify your doubts in the project Expirex.
             </div>
         </div>
         <div class="input-group">
-            <input type="text" id="user-input" placeholder="Type your question..." autocomplete="off" />
-            <button id="send-btn">Send</button>
+            <input type="text" id="user-input" placeholder="Type your question..." autocomplete="off" aria-label="Type your question" />
+            <button id="send-btn" aria-label="Send">Send</button>
         </div>
         <div id="suggestions"></div>
     </div>
@@ -44,7 +43,7 @@
                         div.onclick = () => {
                             userInput.value = s;
                             suggestionsDiv.innerHTML = '';
-                            userInput.focus();
+                            sendMessage(); // Auto-submit on click
                         };
                         suggestionsDiv.appendChild(div);
                     });

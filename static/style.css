@@ -140,6 +140,7 @@ h1 {
     margin: 2px 0;
     border-radius: 4px;
     cursor: pointer;
+    transition: background 0.2s;
 }
 .suggestion:hover {
     background: #d2f5d2;
