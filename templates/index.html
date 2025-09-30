@@ -3,30 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <title>Expirex Chatbot</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f8f8f8; }
-        #chat-container { max-width: 600px; margin: 40px auto; background: #fff; border-radius: 8px; box-shadow: 0 2px 8px #ccc; padding: 24px; }
-        #messages { min-height: 200px; margin-bottom: 16px; }
-        .message { margin: 12px 0; }
-        .bot { color: #2d7a2d; }
-        .user { color: #1a1a1a; text-align: right; }
-        #input-area { display: flex; gap: 8px; }
-        #user-input { flex: 1; padding: 8px; border-radius: 4px; border: 1px solid #ccc; }
-        #send-btn { padding: 8px 16px; border-radius: 4px; border: none; background: #2d7a2d; color: #fff; cursor: pointer; }
-        #suggestions { margin-top: 4px; }
-        .suggestion { background: #f0f0f0; padding: 8px; margin: 2px 0; border-radius: 4px; cursor: pointer; }
-        .suggestion:hover { background: #d2f5d2; }
-    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <div id="chat-container">
-        <div id="messages">
+    <div class="container">
+        <h1>Expirex Chatbot</h1>
+        <div id="chat-box">
             <!-- Initial bot message -->
             <div class="message bot">
                 This is a chatbot created to clarify your doubts in the project Expirex.
             </div>
         </div>
-        <div id="input-area">
+        <div class="input-group">
             <input type="text" id="user-input" placeholder="Type your question..." autocomplete="off" />
             <button id="send-btn">Send</button>
         </div>
@@ -35,7 +23,7 @@
     <script>
         const userInput = document.getElementById('user-input');
         const sendBtn = document.getElementById('send-btn');
-        const messages = document.getElementById('messages');
+        const messages = document.getElementById('chat-box');
         const suggestionsDiv = document.getElementById('suggestions');
 
         // Fetch and show suggestions as user types

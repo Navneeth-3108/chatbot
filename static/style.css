@@ -130,3 +130,17 @@ h1 {
     h1 { font-size: 1.2rem;}
     #chat-box { font-size: 0.95rem; }
 }
+
+#suggestions {
+    margin-top: 4px;
+}
+.suggestion {
+    background: #f0f0f0;
+    padding: 8px;
+    margin: 2px 0;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.suggestion:hover {
+    background: #d2f5d2;
+}
